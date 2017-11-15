@@ -1,0 +1,29 @@
+{
+  "name": "jacksmhtools-client",
+  "version": "0.0.1",
+  "description": "Unofficial client for jack's mousehunt tools",
+  "author": "Geno Roupsky <geno@roupsky.name> (https://github.com/groupsky)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/groupsky/jacksmhtools-client.git"
+  },
+  "devDependencies": {
+    "standard": "*",
+    "tape": "^4.8.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "json2csv": "^3.11.5",
+    "lodash": "^4.17.4",
+    "mysql": "^2.15.0",
+    "yargs": "^10.0.3"
+  },
+  "bin": {
+    "jmht-cli": "./cli.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && tape 'tests/**/*.js'"
+  }
+}
