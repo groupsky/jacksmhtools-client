@@ -3,17 +3,21 @@ var _ = require('lodash')
 var getIdFromName = require('./getIdFromName')
 var debug = require('debug')('ht:vars')
 
+var stageTerm = '? in (select stage_id from hunt_stage where hunt_stage.hunt_id = h.id)'
+
 var TYPE_MAPPING = {
-  base: 'base_id',
-  charm: 'charm_id',
-  cheese: 'cheese_id',
-  location: 'location_id',
-  mouse: 'mouse_id',
-  stage: {
-    from: ' LEFT JOIN hunt_stage hs on (h.id = hs.hunt_id) ',
-    where: 'hs.stage_id'
-  },
-  trap: 'trap_id'
+  base: 'base_id = ?',
+  charm: 'charm_id = ?',
+  cheese: 'cheese_id = ?',
+  location: 'location_id = ?',
+  mouse: 'mouse_id = ?',
+  stage: stageTerm,
+  stage1: stageTerm,
+  stage2: stageTerm,
+  stage3: stageTerm,
+  stage4: stageTerm,
+  stage5: stageTerm,
+  trap: 'trap_id = ?'
 }
 
 module.exports = function (setup) {
@@ -27,7 +31,8 @@ module.exports = function (setup) {
           .resolve(type)
           .then(function (type) {
             debug('step 3', type)
-            return Promise.all(_.map(names, function (values, name) {
+            return Promise
+              .all(_.map(names, function (values, name) {
                 debug('step 4', name, values)
                 return Promise
                   .resolve(name)
@@ -59,10 +64,6 @@ module.exports = function (setup) {
         if (!TYPE_MAPPING[ type ]) throw new Error('Unhandled setup type "' + type + '"')
 
         var term = TYPE_MAPPING[ type ]
-        if (term.from) {
-          fromClause += term.from
-          term = term.where
-        }
         var include = []
         var exclude = []
 
@@ -76,12 +77,12 @@ module.exports = function (setup) {
         }
 
         if (include.length) {
-          whereClause += ' AND ( ' + include.map(function (id) { return term + '=?' }).join(' OR ') + ' ) '
+          whereClause += ' AND ( ' + include.map(function (id) { return term }).join(' OR ') + ' ) '
           values = values.concat(include)
         }
 
         if (exclude.length) {
-          whereClause += ' AND NOT ( ' + exclude.map(function (id) { return term + '=?' }).join(' OR ') + ' ) '
+          whereClause += ' AND NOT ( ' + exclude.map(function (id) { return term }).join(' OR ') + ' ) '
           values = values.concat(exclude)
         }
       }
