@@ -3,6 +3,12 @@ var TYPE_ALIASES = {
   trinket: 'charm',
   weapon: 'trap'
 }
+var NAME_ALIASES = {
+  cheese: {
+    'sb': 'SUPER|Brie+',
+    'sb+': 'SUPER|Brie+'
+  }
+}
 
 exports.prepare = function (val) {
   return val.trim().toLowerCase()
@@ -26,6 +32,10 @@ exports.prepareName = function (type, name) {
     case 'mouse':
       name = name.replace(new RegExp(' ' + type + '$', 'i'), '')
       break
+  }
+
+  if (type in NAME_ALIASES && name in NAME_ALIASES[ type ]) {
+    name = NAME_ALIASES[ type ][ name ]
   }
 
   return name
