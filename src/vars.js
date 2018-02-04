@@ -17,7 +17,9 @@ var TYPE_MAPPING = {
   stage3: stageTerm,
   stage4: stageTerm,
   stage5: stageTerm,
-  trap: 'trap_id = ?'
+  trap: 'trap_id = ?',
+  after: 'timestamp >= ?',
+  before: 'timestamp <= ?'
 }
 
 module.exports = function (setup) {
