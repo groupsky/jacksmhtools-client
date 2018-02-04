@@ -18,6 +18,12 @@ exports.builder = function (yargs) {
       number: true,
       requiresArg: true
     })
+    .option('x', {
+      alias: 'exclude',
+      array: true,
+      description: 'mice to exclude from population data',
+      requiresArg: true
+    })
 }
 
 exports.handler = function (argv) {

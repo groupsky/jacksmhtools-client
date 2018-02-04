@@ -6,12 +6,18 @@ var vars = require('./vars')
 
 var defaults = {
   attraction: 0,
-  confidence: 0
+  exclude: []
 }
 
 module.exports = function (setup, opts) {
   if (!setup) throw new Error('missing setup!')
   opts = _.defaults(opts || {}, defaults)
+  if (opts.exclude) {
+    if (typeof opts.exclude === 'string') {
+      opts.exclude = [ opts.exclude ]
+    }
+    opts.exclude = opts.exclude.map(function (v) { return v.toLowerCase() })
+  }
 
   setup = vars(setup)
 
@@ -64,6 +70,7 @@ module.exports = function (setup, opts) {
         .filter(function (mice) {
           var filter = false
           if (opts.attraction > 0 && mice.seen / sample < opts.attraction) filter = true
+          if (opts.exclude && opts.exclude.indexOf(mice.mouse.toLowerCase()) !== -1) filter = true
           if (filter) {
             filtered++
             filteredSeen += mice.seen
