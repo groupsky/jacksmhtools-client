@@ -45,6 +45,7 @@ module.exports = function (setup, opts) {
       }
     })
     .then(function (req) {
+      debug('query', req.miceQuery, req.values)
       return Promise.all([
         request(opts, { sql: req.miceQuery, values: req.values }),
         request(opts, { sql: req.sampleQuery, values: req.values })

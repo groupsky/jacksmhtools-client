@@ -12,6 +12,11 @@ var MAPPING = {
   mouse: 'mice',
   mice: 'mice',
   stage: 'stages',
+  stage1: 'stages',
+  stage2: 'stages',
+  stage3: 'stages',
+  stage4: 'stages',
+  stage5: 'stages',
   trap: 'traps',
   weapon: 'weapon'
 }
@@ -23,6 +28,7 @@ module.exports = function (type, name, opts) {
   // if we are asked for id instead of name, just return it
   if (!Number.isNaN(+name)) return Promise.resolve({ id: +name })
 
+  if (type.substr(0, 6) === 'detail') return Promise.resolve({id: name})
   type = utils.prepareType(type)
   name = utils.prepareName(type, name)
 

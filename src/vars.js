@@ -4,6 +4,7 @@ var getIdFromName = require('./getIdFromName')
 var debug = require('debug')('ht:vars')
 
 var stageTerm = '? in (select stage_id from hunt_stage where hunt_stage.hunt_id = h.id)'
+var detailTerm = '? in (select concat(t.name, ":", v.name) from hunt_details d join detail_types t on d.detail_type_id = t.id join detail_values v on d.detail_value_id = v.id where d.hunt_id = h.id)'
 
 var TYPE_MAPPING = {
   base: 'base_id = ?',
@@ -17,6 +18,12 @@ var TYPE_MAPPING = {
   stage3: stageTerm,
   stage4: stageTerm,
   stage5: stageTerm,
+  detail: detailTerm,
+  detail1: detailTerm,
+  detail2: detailTerm,
+  detail3: detailTerm,
+  detail4: detailTerm,
+  detail5: detailTerm,
   trap: 'trap_id = ?',
   after: 'timestamp >= ?',
   before: 'timestamp <= ?'
