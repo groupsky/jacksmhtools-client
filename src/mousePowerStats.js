@@ -1,8 +1,10 @@
+const debug = require('debug')('power')
 const traps = require('../data/traps')
 const _ = require('lodash')
 const request = require('./request')
 const bsearch = require('binary-search')
-const { min, sqrt, pow, round, max } = Math
+const vars = require('./vars')
+const {min, sqrt, pow, round, max} = Math
 
 var DEFAULTS = {}
 
@@ -10,13 +12,13 @@ module.exports = async function (mouse, opts) {
   if (!mouse) throw new Error('missing mouse!')
   opts = _.defaults(opts || {}, DEFAULTS)
 
-  let values = [ mouse ]
+  let values = [mouse]
   let names = []
   for (let key in traps) {
     if (!traps.hasOwnProperty(key)) continue
-    if (!Array.isArray(traps[ key ])) continue
-    if (opts[ key ]) {
-      traps[ key ].forEach(trap => {
+    if (!Array.isArray(traps[key])) continue
+    if (opts[key]) {
+      traps[key].forEach(trap => {
         values.push(trap)
         names.push('?')
       })
@@ -25,20 +27,31 @@ module.exports = async function (mouse, opts) {
 
   if (!names.length) return []
 
+  let setup = false
+  if (opts.vars) {
+    setup = await vars(opts.vars)
+  }
+
   let query = ` 
      SELECT total_power, total_luck, sum(caught) as caught, count(*) as count, sum(caught)/count(*) as perc
      FROM hunts h
      JOIN traps t on t.id = h.trap_id
      JOIN mice m on m.id = h.mouse_id
+     ${setup ? setup.fromClause : ''}
      WHERE total_power IS NOT NULL
      AND total_luck IS NOT NULL
      AND m.name = ?
      AND t.name in (${names.join(',')})
+     ${setup ? setup.whereClause : ''}
      GROUP BY total_power, total_luck
      ORDER BY count DESC
      `
 
-  let data = await request(opts, { sql: query, values: values })
+  if (setup) values = values.concat(setup.values)
+
+  let data = await request(opts, {sql: query, values: values})
+
+  debug('query', query, values)
 
   if (opts.eff) {
     const empirical = data.map(i => i.caught).reduce(sumsq, 0)
@@ -47,7 +60,7 @@ module.exports = async function (mouse, opts) {
     fake.length = 5000000
     const seen = data.map(i => i.count).reduce(sum)
     let res = []
-    let power = bsearch(fake, { target: empirical, data }, (dummy, { target, data }, power) => {
+    let power = bsearch(fake, {target: empirical, data}, (dummy, {target, data}, power) => {
       let predicted = compute(data, power, opts.eff)
       let minPredictedLuck = minLuck(opts.eff, power)
       let d = {
@@ -63,23 +76,28 @@ module.exports = async function (mouse, opts) {
       if (maxFtcLuck > minPredictedLuck) return -1
       return target - predicted
     })
-    return res[res.length-1]
+    return res[res.length - 1]
   }
 
   return data
 }
 
-function sum (s, i) { return s + i }
-function sumsq (s, i) { return s + pow(i, 2) }
+function sum(s, i) {
+  return s + i
+}
 
-function calccr (trapPower, trapLuck, effectiveness, mousePower) {
+function sumsq(s, i) {
+  return s + pow(i, 2)
+}
+
+function calccr(trapPower, trapLuck, effectiveness, mousePower) {
   const power = trapPower * effectiveness
   const luckEff = min(2, effectiveness)
   const luck = (3 - luckEff) * pow(luckEff * trapLuck, 2)
   return min(1, (power + luck) / (power + mousePower))
 }
 
-function compute (data, mousePower, effectiveness) {
+function compute(data, mousePower, effectiveness) {
   return data.map(i => i.count * calccr(i.total_power, i.total_luck, effectiveness, mousePower)).reduce(sumsq, 0)
 }
 

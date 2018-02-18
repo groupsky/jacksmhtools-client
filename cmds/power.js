@@ -11,6 +11,7 @@ exports.builder = function (yargs) {
       string: true
     })
     .options(output.options)
+    .options(vars.options)
     .option('a', {
       alias: 'arcane',
       boolean: true,
