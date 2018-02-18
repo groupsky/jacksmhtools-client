@@ -1,6 +1,6 @@
 {
   "name": "jacksmhtools-client",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Unofficial client for jack's mousehunt tools",
   "author": "Geno Roupsky <geno@roupsky.name> (https://github.com/groupsky)",
   "license": "MIT",
