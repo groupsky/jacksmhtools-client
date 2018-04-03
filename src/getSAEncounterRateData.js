@@ -18,6 +18,12 @@ module.exports = function (setup, opts) {
     }
     opts.exclude = opts.exclude.map(function (v) { return v.toLowerCase() })
   }
+  if (opts.include) {
+    if (typeof opts.include === 'string') {
+      opts.include = [ opts.include ]
+    }
+    opts.include = opts.include.map(function (v) { return v.toLowerCase() })
+  }
 
   setup = vars(setup)
 
@@ -57,6 +63,7 @@ module.exports = function (setup, opts) {
       var total = 0
       var filtered = 0
       var filteredSeen = 0
+      debug('retrieved %d mice', data[ 0 ].length)
       var res = data[ 0 ]
         .map(function (mice) {
           var seen = +mice.seen
@@ -70,8 +77,18 @@ module.exports = function (setup, opts) {
         })
         .filter(function (mice) {
           var filter = false
-          if (opts.attraction > 0 && mice.seen / sample < opts.attraction) filter = true
-          if (opts.exclude && opts.exclude.indexOf(mice.mouse.toLowerCase()) !== -1) filter = true
+          if (opts.attraction > 0 && mice.seen / sample < opts.attraction) {
+            filter = true
+            debug('skipping %s due to low attraction', mice.mouse)
+          }
+          if (opts.exclude && opts.exclude.indexOf(mice.mouse.toLowerCase()) !== -1) {
+            filter = true
+            debug('skipping %s due to exclude list', mice.mouse)
+          }
+          if (opts.include && opts.include.indexOf(mice.mouse.toLowerCase()) === -1) {
+            filter = true
+            debug('skipping %s due to include list', mice.mouse)
+          }
           if (filter) {
             filtered++
             filteredSeen += mice.seen
@@ -83,6 +100,7 @@ module.exports = function (setup, opts) {
         .map(function (mice) {
           // correct attraction due to filtering
           mice.attraction = mice.seen / total
+          mice.sample = total
           return mice
         })
         .sort(function (a, b) {
