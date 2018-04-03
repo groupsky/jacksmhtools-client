@@ -1,6 +1,6 @@
 var Promise = require('bluebird')
 var _ = require('lodash')
-var getIdFromName = require('./getIdFromName')
+var getId = require('./id')
 var debug = require('debug')('ht:vars')
 
 var stageTerm = '? in (select stage_id from hunt_stage where hunt_stage.hunt_id = h.id)'
@@ -45,7 +45,7 @@ module.exports = function (setup) {
                 debug('step 4', name, values)
                 return Promise
                   .resolve(name)
-                  .then(getIdFromName.bind(null, type))
+                  .then(getId.bind(null, type))
                   .then(function (res) { return { name: name, id: res.id, values: values } })
               }))
               .then(function (items) {
