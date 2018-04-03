@@ -26,9 +26,10 @@ module.exports = function (type, name, opts) {
   if (!name) throw new Error('missing name!')
 
   // if we are asked for id instead of name, just return it
-  if (!Number.isNaN(+name)) return Promise.resolve({ id: +name })
+  // if (!Number.isNaN(+name)) return Promise.resolve({ id: +name })
 
   if (type.substr(0, 6) === 'detail') return Promise.resolve({id: name})
+  if (type === 'after') return Promise.resolve({id: +name})
   type = utils.prepareType(type)
   name = utils.prepareName(type, name)
 
