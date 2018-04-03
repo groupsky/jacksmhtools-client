@@ -1,4 +1,5 @@
 var _ = require('lodash')
+var debug = require('debug')('jt:request')
 var mysql = require('mysql')
 var Promise = require('bluebird')
 
@@ -19,6 +20,7 @@ module.exports = function (opts, req) {
 
   return new Promise(function (resolve, reject) {
     var connection = mysql.createConnection(opts)
+    debug('requesting', req)
     connection.query(req, function (err, res, fields) {
       if (err) return reject(err)
       connection.end(function (err) {
