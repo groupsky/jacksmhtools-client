@@ -3,7 +3,7 @@ Unofficial client for jack's mousehunt database
 
 ## Usage
 
-```
+```shell
 jmht-cli <command> [options]
 
 Commands:
@@ -28,7 +28,7 @@ Computes the attraction rate for specific setup, with correction for attraction 
 
 #### Example 
 
-```
+```shell
 jmht-cli attr --vars.cheese.gilded --vars.location."town of gnawnia"
 #{
 #  "attraction": 0.8451512474057308,
@@ -44,7 +44,7 @@ Loot drops for specific setup.
 
 #### Example
 
-```
+```shell
 jmht-cli loot --vars.cheese.undead\ emmental --vars.location.catacombs --vars.mouse."Zombot Unipire" --min_qty 1 --exclude "Cursed Gold"
 #[
 #  {
@@ -74,7 +74,7 @@ Mouse population for specific setup
 
 #### Example
 
-```
+```shell
 jmht-cli pop --vars.cheese.sb --vars.location.living\ garden
 #[
 #  {
@@ -128,7 +128,7 @@ Compute mouse power given power effectiveness and power types.
 
 #### Example
 
-```
+```shell
 jmht-cli power shadow\ stalker --forgotten --eff 0.5
 #{
 #  "mousePower": 28184,
