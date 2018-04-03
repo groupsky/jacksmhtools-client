@@ -2,6 +2,7 @@ module.exports.getId = require('./src/id')
 module.exports.getLoot = require('./src/loot')
 module.exports.getPopulation = require('./src/population')
 module.exports.calcMousePower = require('./src/mousePower')
+module.exports.getAttraction = require('./src/attraction')
 
 /**
  * @deprecated
