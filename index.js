@@ -4,6 +4,7 @@ module.exports.getPopulation = require('./src/population')
 module.exports.calcMousePower = require('./src/mousePower')
 module.exports.getAttraction = require('./src/attraction')
 module.exports.getStages = require('./src/stages')
+module.exports.getDetails = require('./src/details')
 
 /**
  * @deprecated
