@@ -6,7 +6,9 @@ var TYPE_ALIASES = {
 var NAME_ALIASES = {
   cheese: {
     'sb': 'SUPER|Brie+',
-    'sb+': 'SUPER|Brie+'
+    'sb+': 'SUPER|Brie+',
+    'toxic sb': 'Toxic SUPER|Brie+',
+    'toxic sb+': 'Toxic SUPER|Brie+'
   }
 }
 
