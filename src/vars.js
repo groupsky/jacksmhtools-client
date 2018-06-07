@@ -1,10 +1,14 @@
 var Promise = require('bluebird')
 var _ = require('lodash')
 var getId = require('./id')
-var debug = require('debug')('ht:vars')
+var debug = require('debug')('jm:vars')
 
 var stageTerm = '? in (select stage_id from hunt_stage where hunt_stage.hunt_id = h.id)'
 var detailTerm = '? in (select concat(t.name, ":", v.name) from hunt_details d join detail_types t on d.detail_type_id = t.id join detail_values v on d.detail_value_id = v.id where d.hunt_id = h.id)'
+// var detailTerm = '? in (select concat(t.name, ":", v.name) from hunt_details d, detail_types t, detail_values v where d.hunt_id = h.id and d.detail_ids = concat(t.id,":",v.id))'
+var prevStageTerm = '? in (select stage_id from hunt_stage where hunt_stage.hunt_id = (select max(id) from hunts where hunts.id < h.id and hunts.user_id = h.user_id))'
+var prevDetailTerm = '? in (select concat(t.name, ":", v.name) from hunt_details d join detail_types t on d.detail_type_id = t.id join detail_values v on d.detail_value_id = v.id where d.hunt_id = (select max(id) from hunts where hunts.id < h.id and hunts.user_id = h.user_id))'
+// var prevDetailTerm = '? in (select concat(t.name, ":", v.name) from hunt_details d, detail_types t, detail_values v where d.hunt_id = (select max(id) from hunts where hunts.id < h.id and hunts.user_id = h.user_id) and d.detail_ids = concat(t.id,":",v.id))'
 
 var TYPE_MAPPING = {
   base: 'base_id = ?',
@@ -24,6 +28,18 @@ var TYPE_MAPPING = {
   detail3: detailTerm,
   detail4: detailTerm,
   detail5: detailTerm,
+  pstage: prevStageTerm,
+  pstage1: prevStageTerm,
+  pstage2: prevStageTerm,
+  pstage3: prevStageTerm,
+  pstage4: prevStageTerm,
+  pstage5: prevStageTerm,
+  pdetail: prevDetailTerm,
+  pdetail1: prevDetailTerm,
+  pdetail2: prevDetailTerm,
+  pdetail3: prevDetailTerm,
+  pdetail4: prevDetailTerm,
+  pdetail5: prevDetailTerm,
   trap: 'trap_id = ?',
   after: 'timestamp >= ?',
   before: 'timestamp <= ?'

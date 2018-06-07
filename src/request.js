@@ -1,5 +1,5 @@
 var _ = require('lodash')
-var debug = require('debug')('jt:request')
+var debug = require('debug')('jm:request')
 var mysql = require('mysql')
 var Promise = require('bluebird')
 

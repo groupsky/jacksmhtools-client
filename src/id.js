@@ -17,6 +17,12 @@ var MAPPING = {
   stage3: 'stages',
   stage4: 'stages',
   stage5: 'stages',
+  pstage: 'stages',
+  pstage1: 'stages',
+  pstage2: 'stages',
+  pstage3: 'stages',
+  pstage4: 'stages',
+  pstage5: 'stages',
   trap: 'traps',
   weapon: 'weapon'
 }
@@ -28,7 +34,7 @@ module.exports = function (type, name, opts) {
   // if we are asked for id instead of name, just return it
   // if (!Number.isNaN(+name)) return Promise.resolve({ id: +name })
 
-  if (type.substr(0, 6) === 'detail') return Promise.resolve({id: name})
+  if (type.substr(0, 6) === 'detail' || type.substr(0, 7) === 'pdetail') return Promise.resolve({id: name})
   if (type === 'after') return Promise.resolve({id: +name})
   type = utils.prepareType(type)
   name = utils.prepareName(type, name)
