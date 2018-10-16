@@ -107,7 +107,12 @@ module.exports = function (setup) {
         }
 
         if (exclude.length) {
-          whereClause += ' AND NOT ( ' + exclude.map(function (id) { return term }).join(' OR ') + ' ) '
+          // Implicitly include 'null' charm ID when excluding special charms
+          if (type === 'charm') {
+            whereClause += ' AND ( ' + exclude.map(function (id) { return 'charm_id != ?' }).join(' AND ') + ' OR charm_id IS NULL )'
+          } else {
+            whereClause += ' AND NOT ( ' + exclude.map(function (id) { return term }).join(' OR ') + ' ) '
+          }
           values = values.concat(exclude)
         }
       }
