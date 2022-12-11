@@ -1,6 +1,6 @@
 var _ = require('lodash')
 var debug = require('debug')('jm:request')
-var mysql = require('mysql')
+var mysql = require('mysql2')
 var Promise = require('bluebird')
 
 var DEFAULTS = {
